@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: secure-routing
+  annotations:
+    #nginx.ingress.kubernetes.io/auth-type: basic
+    #nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    #nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - foo'
+
+    # type of authentication
+    nginx.ingress.kubernetes.io/auth-type: basic
+    # name of the secret that contains the user/password definitions
+    nginx.ingress.kubernetes.io/auth-secret: mycredentials
+    # message to display with an appropriate context why the authentication is required
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+spec:
+  rules:
+    - host: fleetman.devgovcio.com
+      http:
+        paths:
+          - path: /queue
+            backend:
+              serviceName: fleetman-queue
+              servicePort: 8161
+
+

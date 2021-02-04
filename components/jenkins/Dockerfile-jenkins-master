@@ -1,0 +1,38 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+ENV DOCKERVERSION=18.03.1-ce
+
+# RUN /usr/local/bin/install-plugins.sh git matrix-auth workflow-aggregator docker-workflow blueocean credentials-binding
+
+# RUN /usr/local/bin/install-plugins.sh junit:1.6 ant:1.3 mesos:0.13.0 git:latest filesystem_scm:experimental docker:1.1.6
+
+RUN /usr/local/bin/install-plugins.sh junit:latest ant:latest git:latest filesystem_scm:experimental  pipeline-model-definition:1.7.1 matrix-project:1.17 pipeline-maven:3.8.3 cloudbees-folder:6.14 gitlab-plugin:1.5.13 workflow-aggregator:2.6
+
+ENV JENKINS_USER admin
+ENV JENKINS_PASS admin
+
+# Skip initial setup
+ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+
+COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/
+COPY default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
+
+RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
+  && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
+                 -C /usr/local/bin docker/docker \
+  && rm docker-${DOCKERVERSION}.tgz
+
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
+	&& chmod +x ./kubectl \
+	&& mv ./kubectl /usr/local/bin/kubectl
+	
+RUN curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-darwin-amd64 \
+  && chmod +x kops \
+  && mv kops /usr/local/bin/kops
+  
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" \
+  && unzip awscli-bundle.zip \
+  && ./awscli-bundle/install -b ~/bin/aws
+  

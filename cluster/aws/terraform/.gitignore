@@ -1,0 +1,11 @@
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.backup
+*/.terraform/*
+.terraform/*
+terraform.tfvars
+*plan
+*/mykey*
+manifest*
+iac-ci-key*
+*.swp

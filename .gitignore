@@ -1,0 +1,5 @@
+### Apple ###
+.DS_Store
+*.swp
+.project
+cluster/aws/set-env-vars.sh

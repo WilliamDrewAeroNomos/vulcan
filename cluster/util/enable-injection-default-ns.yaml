@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: enabled
+  name: default
+  uid: ae9c6c63-340e-4cb5-9814-80a77cb13faf
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active

@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: artifactory
+  labels:
+    istio-injection: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: artifactory
+  name: artifactory
+  labels: 
+    app: artifactory
+spec:
+  selector:
+    matchLabels:
+      app: artifactory
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: artifactory
+    spec:
+      containers:
+        - name: artifactory
+          image: mattgruter/artifactory
+          ports:
+            - name: http-port
+              containerPort: 8080
+          volumeMounts:
+            - name: artifactory-home
+              mountPath: /var/artifactory-home
+      volumes:
+        - name: artifactory-home
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: artifactory
+  name: artifactory
+  labels:
+    app: artifactory
+spec:
+  ports:
+    - port: 3030
+      targetPort: 8080
+  selector:
+    app: artifactory
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  namespace: artifactory
+  name: artifactory-routing
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /artifactory
+        backend:
+          serviceName: artifactory
+          servicePort: 3030
+---

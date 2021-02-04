@@ -1,0 +1,89 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sonar
+  labels:
+    istio-injection: enabled
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: sonar
+  name: postgres-pwd
+type: Opaque
+data:
+  password: c29uYXI=
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: sonar
+  name: claim-postgres
+spec:
+  storageClassName: cloud-ssd
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 80Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: sonar
+  name: sonar-postgres-deployment
+  labels: 
+    app: sonar-postgres
+spec:
+  selector:
+    matchLabels:
+      app: sonar-postgres
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sonar-postgres
+    spec:
+      containers:
+        - image: postgres:latest
+          name: sonar-postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-pwd
+                  key: password
+            - name: POSTGRES_USER
+              value: sonar
+          ports:
+            - containerPort: 5432
+              name: postgresport
+          volumeMounts:
+            # This name must match the volumes.name below.
+            - name: data-disk
+              #mountPath: /var/lib/postgresql/data
+              mountPath: /var/lib/postgresql
+      volumes:
+        - name: data-disk
+          persistentVolumeClaim:
+            claimName: claim-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: sonar
+  name: sonar-postgres
+  labels:
+    app: sonar-postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: sonar-postgres
+  type: ClusterIP
+---
+
+
