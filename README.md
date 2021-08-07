@@ -428,7 +428,7 @@ The K8S cluster and all it's components have been destroyed.
 ## Contributing
 
 This project and the other projects in the DevSecOps CoT are maintained in the GCIO [Jira](http://jira.governmentcio.com:8080) instance. 
-Contact wdrew@governmentcio.com for an account and you will be sent an e-mail with your account information. You're encouraged to contribute in any way to these projects by joining a current effort or taking ownership of an epic yourself. You shoudn't be put off or discouraged if you feel you lack the skills to participate. The goal of the CoT is to actually build Site Reliability Engineering (SRE) skills within GovernmentCIO in order to staff potential programs and to support current programs and efforts as they attempt to improve their development and delivery and establish a true DevSecOps posture and culture. Don't be afraid to jump right in.
+Contact wdrew@governmentcio.com for an account and you will be sent an e-mail with your account information. You're encouraged to contribute in any way to these projects by joining a current effort or taking ownership of an epic yourself. You shoudn't be put off or discouraged if you feel you lack the skills to participate. The goal of the CoT is to build real Site Reliability Engineering (SRE) skills within GovernmentCIO in order to staff potential programs and to support current programs and efforts as they attempt to improve their development and delivery and establish a true DevSecOps posture and culture. Don't be afraid to jump right in.
 
 ## License
 [Apache](https://www.apache.org/licenses/LICENSE-2.0)
